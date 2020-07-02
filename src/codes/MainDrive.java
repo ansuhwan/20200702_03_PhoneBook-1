@@ -1,7 +1,10 @@
 package codes;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -47,7 +50,8 @@ public class MainDrive {
 				addPhoneNumToFile();
 			}
 			else if (inputMenu == 2) {
-//				전화번호 전체 조회 기능 구현 필요
+//				전화번호 전체 조회 기능 실행
+				readAllPhoneNum();
 			}
 			else {
 //				0,1,2 외의 값이 들어온 경우 대응.
@@ -59,6 +63,70 @@ public class MainDrive {
 		
 	}
 	
+//	파일에 저장된 전화번호 목록 출력
+	public static void readAllPhoneNum() {
+		
+//		파일에 저장된 데이터 -> 자바 프로그램에서 활용. (File INPUT)
+//		FileReader / BufferedReader 활용.
+		
+//		불러올 파일의 위치 지정 => 저장할때 사용하는 파일명과 동일하게.
+		File file = new File("phoneBook.txt");
+		
+		try {
+
+//			파일을 실제로 불러오는 클래스	
+			FileReader fr = new FileReader(file);
+			
+//			한줄씩 한꺼번에 불러오게 하는 클래스 => fr은 한글자씩. fr을 보조해서 한문장 로드.
+			BufferedReader br = new BufferedReader(fr);
+			
+//			모든 연락처를 불러올때까지 반복
+			
+			while (true) {
+				
+//				한줄을 통째로 불러오기. => IOException 처리 필요
+				String line = br.readLine();
+				
+//				불러온 내용을 검사. null인지.
+				if (line == null) {
+					
+//					더이상 불러올 내용이 없어서 null이 들어옴.
+//					=> 다 읽었다. => 무한반복 탈출
+					
+					System.out.println("연락처를 모두 읽어왔습니다.");
+					break;
+					
+				}
+				
+//				이 줄의 코드가 실행된다 : break를 안만났다 => 불러온 내용이 null 아님.
+//				실제로 파일에 적혀있던 한줄이 line에 담겨있다.
+				
+				System.out.println(line);
+				
+			}
+			
+//			while 빠져나옴 : 파일을 다 읽었으니 빠져나왔다.
+//			파일 사용을 종료. br부터 닫고, fr 닫자.
+			
+			br.close();
+			fr.close();
+			
+			
+		} catch (FileNotFoundException e) {
+			
+//			읽어올 파일이 없는 경우. (삭제 or 아직 안만든 경우)
+			System.out.println("불러올 파일이 없습니다.");
+			System.out.println("연락처를 저장하고 다시 시도해주세요.");
+			
+//			e.printStackTrace();
+		} catch (IOException e) {
+			
+			System.out.println("연락처를 읽어오는 중에 문제가 발생했습니다.");
+			e.printStackTrace();
+			
+		}
+		
+	}
 	
 //	전화번호 + 이름 + 생년 정보 저장 기능.
 	public static void addPhoneNumToFile() {
